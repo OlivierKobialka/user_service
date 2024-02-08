@@ -1,23 +1,34 @@
-from flask import Flask, render_template, request, redirect, url_for, Response
-from typing import Union
+from flask import Flask, request, Response
+from typing import Union, List
 
 app = Flask(__name__)
 
 
-class UserTypeModel:
-    def __init__(self, firstName: str, lastName: str, birthYear: int, group: Union[str, int]):
+class User:
+    def __init__(self, firstName: str, lastName: str, birthYear: int, group: str):
         self.firstName = firstName
         self.lastName = lastName
         self.birthYear = birthYear
         self.group = group
 
+    def __repr__(self):
+        return f"User(firstName='{self.firstName}', lastName='{self.lastName}', birthYear={self.birthYear}, group='{self.group}')"
+
+
+all_users: List[User] = [
+    User(firstName="John", lastName="Doe", birthYear=1990, group="admin"),
+    User(firstName="Jane", lastName="Doe", birthYear=1991, group="user")
+]
+
 
 @app.route('/users', methods=['GET', 'POST'])
 def users() -> Union[str, Response]:
     if request.method == 'POST':
-        return redirect(url_for('users'))
+        return "POST"
+    elif request.method == 'GET':
+        pass
     else:
-        return render_template('users.html')
+        return Response("Method not allowed", status=405)
 
 
 @app.route('/users/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
