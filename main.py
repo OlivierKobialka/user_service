@@ -42,9 +42,15 @@ def users() -> Union[str, Response]:
 @app.route('/users/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
 def by_user_id(id: int) -> Response:
     if request.method == 'PATCH':
-        pass
+        data = request.json
+        all_users[id].first_name = data['first_name']
+        all_users[id].last_name = data['last_name']
+        all_users[id].birth_year = data['birth_year']
+        all_users[id].group = data['group']
+        return Response(str(all_users[id]), status=200)
     elif request.method == 'DELETE':
-        pass
+        all_users.pop(id)
+        return Response("User deleted", status=200)
     elif request.method == 'GET':
         return Response(str(all_users[id]), status=200)
     else:
